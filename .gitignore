@@ -85,7 +85,7 @@ dist
 
 # Gatsby files
 .cache/
-public
+# public - removed to allow dashboard files
 
 # Vuepress build output
 .vuepress/dist
