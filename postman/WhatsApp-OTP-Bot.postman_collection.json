@@ -1,0 +1,382 @@
+{
+  "info": {
+    "name": "WhatsApp OTP Bot API",
+    "description": "Complete API collection for WhatsApp OTP Bot",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_postman_id": "whatsapp-otp-bot-api",
+    "version": "1.0.0"
+  },
+  "auth": {
+    "type": "apikey",
+    "apikey": [
+      {
+        "key": "key",
+        "value": "X-API-Key",
+        "type": "string"
+      },
+      {
+        "key": "value",
+        "value": "{{API_KEY}}",
+        "type": "string"
+      }
+    ]
+  },
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Generate API Key",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"My Application\",\n  \"permissions\": [\"send_otp\", \"send_message\"],\n  \"rateLimit\": 100\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/auth/generate-key",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "auth", "generate-key"]
+            }
+          }
+        },
+        {
+          "name": "Validate API Key",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{BASE_URL}}/api/auth/validate",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "auth", "validate"]
+            }
+          }
+        },
+        {
+          "name": "List API Keys",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{BASE_URL}}/api/auth/keys?page=1&limit=50",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "auth", "keys"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "50"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "WhatsApp Connection",
+      "item": [
+        {
+          "name": "Connect WhatsApp",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{BASE_URL}}/api/connect",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "connect"]
+            }
+          }
+        },
+        {
+          "name": "Get Connection Status",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{BASE_URL}}/api/status",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "status"]
+            }
+          }
+        },
+        {
+          "name": "Get QR Code",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{BASE_URL}}/api/qr",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "qr"]
+            }
+          }
+        },
+        {
+          "name": "Disconnect WhatsApp",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{BASE_URL}}/api/disconnect",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "disconnect"]
+            }
+          }
+        },
+        {
+          "name": "Restart Connection",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{BASE_URL}}/api/restart",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "restart"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "OTP Operations",
+      "item": [
+        {
+          "name": "Send OTP",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phone\": \"+1234567890\",\n  \"length\": 6,\n  \"type\": \"numeric\",\n  \"expirationMinutes\": 10,\n  \"purpose\": \"verification\"\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/send-otp",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "send-otp"]
+            }
+          }
+        },
+        {
+          "name": "Validate OTP",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phone\": \"+1234567890\",\n  \"otpCode\": \"123456\",\n  \"purpose\": \"verification\"\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/validate-otp",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "validate-otp"]
+            }
+          }
+        },
+        {
+          "name": "Get OTP Info",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{BASE_URL}}/api/otp/info?phone=+1234567890&purpose=verification",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "otp", "info"],
+              "query": [
+                {
+                  "key": "phone",
+                  "value": "+1234567890"
+                },
+                {
+                  "key": "purpose",
+                  "value": "verification"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Revoke OTP",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phone\": \"+1234567890\",\n  \"purpose\": \"verification\"\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/otp/revoke",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "otp", "revoke"]
+            }
+          }
+        },
+        {
+          "name": "Resend OTP",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phone\": \"+1234567890\",\n  \"purpose\": \"verification\"\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/otp/resend",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "otp", "resend"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Messaging",
+      "item": [
+        {
+          "name": "Send Custom Message",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phone\": \"+1234567890\",\n  \"message\": \"Hello from WhatsApp Bot!\"\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/send-message",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "send-message"]
+            }
+          }
+        },
+        {
+          "name": "Get Messages",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{BASE_URL}}/api/messages?page=1&limit=50&status=delivered",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "messages"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "50"
+                },
+                {
+                  "key": "status",
+                  "value": "delivered"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "System",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{BASE_URL}}/api/health",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "health"]
+            }
+          }
+        },
+        {
+          "name": "Get Statistics",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{BASE_URL}}/api/stats?days=30",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "stats"],
+              "query": [
+                {
+                  "key": "days",
+                  "value": "30"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Sessions",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{BASE_URL}}/api/sessions?page=1&limit=50",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "sessions"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "50"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Clear Sessions",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{BASE_URL}}/api/sessions/clear",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "sessions", "clear"]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "BASE_URL",
+      "value": "https://your-domain.com",
+      "type": "string"
+    },
+    {
+      "key": "API_KEY",
+      "value": "wab_your_api_key_here",
+      "type": "string"
+    }
+  ]
+}

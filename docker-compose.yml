@@ -1,0 +1,76 @@
+version: '3.8'
+
+services:
+  whatsapp-otp-bot:
+    build: .
+    container_name: whatsapp-otp-bot
+    restart: unless-stopped
+    ports:
+      - "${PORT:-3000}:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - DB_PATH=/app/data/database.sqlite
+      - LOG_FILE_PATH=/app/logs/app.log
+      - CHROME_HEADLESS=true
+      - CHROME_USER_DATA_DIR=/app/data/chrome-user-data
+      - WHATSAPP_SESSION_PATH=/app/data/sessions
+    volumes:
+      - whatsapp_data:/app/data
+      - whatsapp_logs:/app/logs
+      - /dev/shm:/dev/shm
+    networks:
+      - whatsapp-network
+    cap_add:
+      - SYS_ADMIN
+    security_opt:
+      - seccomp:unconfined
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  nginx:
+    image: nginx:alpine
+    container_name: whatsapp-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./deployment/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./deployment/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+      - nginx_logs:/var/log/nginx
+      - ssl_certs:/etc/nginx/ssl
+    depends_on:
+      - whatsapp-otp-bot
+    networks:
+      - whatsapp-network
+
+  watchtower:
+    image: containrrr/watchtower
+    container_name: whatsapp-watchtower
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - WATCHTOWER_CLEANUP=true
+      - WATCHTOWER_POLL_INTERVAL=300
+      - WATCHTOWER_INCLUDE_STOPPED=true
+    command: whatsapp-otp-bot
+
+volumes:
+  whatsapp_data:
+    driver: local
+  whatsapp_logs:
+    driver: local
+  nginx_logs:
+    driver: local
+  ssl_certs:
+    driver: local
+
+networks:
+  whatsapp-network:
+    driver: bridge

@@ -1,0 +1,69 @@
+# Dockerfile specific ignores
+.dockerignore
+Dockerfile*
+docker-compose*
+
+# Git
+.git/
+.gitignore
+
+# Documentation
+README.md
+docs/
+*.md
+
+# Development files
+.env*
+!.env.example
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Runtime data
+data/
+logs/
+temp/
+uploads/
+downloads/
+backups/
+sessions/
+chrome-user-data/
+*.sqlite
+*.db
+*.log
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Test coverage
+coverage/
+
+# Deployment files (keep only in source, not in image)
+deployment/scripts/
+deployment/systemd/
+postman/
+
+# CI/CD
+.github/
+.gitlab-ci.yml
+.travis.yml
+
+# Temporary files
+tmp/
+*.tmp
+*.temp
