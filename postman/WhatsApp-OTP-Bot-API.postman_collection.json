@@ -1,0 +1,323 @@
+{
+  "info": {
+    "name": "WhatsApp OTP Bot API",
+    "description": "Complete API collection for WhatsApp OTP Bot with all endpoints and examples",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "version": "1.0.0"
+  },
+  "auth": {
+    "type": "apikey",
+    "apikey": [
+      {
+        "key": "key",
+        "value": "X-API-Key",
+        "type": "string"
+      },
+      {
+        "key": "value",
+        "value": "{{API_KEY}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "BASE_URL",
+      "value": "http://localhost:3000"
+    },
+    {
+      "key": "API_KEY",
+      "value": "wab_your_api_key_here"
+    }
+  ],
+  "item": [
+    {
+      "name": "Health Check",
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{BASE_URL}}/health",
+          "host": ["{{BASE_URL}}"],
+          "path": ["health"]
+        },
+        "description": "Check if the service is running and healthy"
+      },
+      "response": []
+    },
+    {
+      "name": "API Documentation",
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{BASE_URL}}/api/docs",
+          "host": ["{{BASE_URL}}"],
+          "path": ["api", "docs"]
+        },
+        "description": "Get API documentation and available endpoints"
+      },
+      "response": []
+    },
+    {
+      "name": "Get Status",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{BASE_URL}}/api/status",
+          "host": ["{{BASE_URL}}"],
+          "path": ["api", "status"]
+        },
+        "description": "Get bot status, WhatsApp connection status, and usage statistics"
+      },
+      "response": []
+    },
+    {
+      "name": "Send OTP",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test(\"Response has success property\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData).to.have.property('success');",
+              "});",
+              "",
+              "pm.test(\"OTP ID is returned\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData.data).to.have.property('otpId');",
+              "    pm.collectionVariables.set(\"OTP_ID\", jsonData.data.otpId);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"phoneNumber\": \"+1234567890\",\n  \"appName\": \"Test Application\",\n  \"otpLength\": 6,\n  \"template\": \"Your OTP is: {otp}. Valid for {expiry} minutes.\"\n}"
+        },
+        "url": {
+          "raw": "{{BASE_URL}}/api/send-otp",
+          "host": ["{{BASE_URL}}"],
+          "path": ["api", "send-otp"]
+        },
+        "description": "Send OTP to a phone number via WhatsApp"
+      },
+      "response": []
+    },
+    {
+      "name": "Connect WhatsApp",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test(\"Connection initiated\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData).to.have.property('success');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{BASE_URL}}/api/connect",
+          "host": ["{{BASE_URL}}"],
+          "path": ["api", "connect"]
+        },
+        "description": "Initialize WhatsApp Web connection"
+      },
+      "response": []
+    },
+    {
+      "name": "Get QR Code",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{BASE_URL}}/api/qr",
+          "host": ["{{BASE_URL}}"],
+          "path": ["api", "qr"]
+        },
+        "description": "Get QR code for WhatsApp Web authentication"
+      },
+      "response": []
+    },
+    {
+      "name": "Disconnect WhatsApp",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{BASE_URL}}/api/disconnect",
+          "host": ["{{BASE_URL}}"],
+          "path": ["api", "disconnect"]
+        },
+        "description": "Disconnect WhatsApp Web session"
+      },
+      "response": []
+    },
+    {
+      "name": "Restart WhatsApp",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{BASE_URL}}/api/restart",
+          "host": ["{{BASE_URL}}"],
+          "path": ["api", "restart"]
+        },
+        "description": "Restart WhatsApp Web connection"
+      },
+      "response": []
+    },
+    {
+      "name": "Generate API Key",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test(\"API key generated\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData.data).to.have.property('apiKey');",
+              "    pm.collectionVariables.set(\"GENERATED_API_KEY\", jsonData.data.apiKey);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "apikey",
+          "apikey": [
+            {
+              "key": "key",
+              "value": "X-Admin-Token",
+              "type": "string"
+            },
+            {
+              "key": "value",
+              "value": "{{ADMIN_TOKEN}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"appName\": \"My Application\",\n  \"rateLimit\": 1000\n}"
+        },
+        "url": {
+          "raw": "{{BASE_URL}}/api/generate-key",
+          "host": ["{{BASE_URL}}"],
+          "path": ["api", "generate-key"]
+        },
+        "description": "Generate new API key (admin only)"
+      },
+      "response": []
+    },
+    {
+      "name": "Get Usage Statistics",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{BASE_URL}}/api/usage/30",
+          "host": ["{{BASE_URL}}"],
+          "path": ["api", "usage", "30"]
+        },
+        "description": "Get usage statistics for the last 30 days"
+      },
+      "response": []
+    },
+    {
+      "name": "Get Recent Messages",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{BASE_URL}}/api/messages?limit=20",
+          "host": ["{{BASE_URL}}"],
+          "path": ["api", "messages"],
+          "query": [
+            {
+              "key": "limit",
+              "value": "20"
+            }
+          ]
+        },
+        "description": "Get recent OTP messages sent"
+      },
+      "response": []
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Global pre-request script",
+          "console.log('Request to:', pm.request.url);"
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Global test script",
+          "pm.test('Response time is less than 5s', function () {",
+          "    pm.expect(pm.response.responseTime).to.be.below(5000);",
+          "});",
+          "",
+          "pm.test('Response should be JSON', function () {",
+          "    pm.response.to.be.json;",
+          "});"
+        ]
+      }
+    }
+  ]
+}

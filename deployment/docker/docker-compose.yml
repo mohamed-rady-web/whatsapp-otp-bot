@@ -1,0 +1,68 @@
+version: '3.8'
+
+services:
+  whatsapp-otp-bot:
+    build:
+      context: ../..
+      dockerfile: deployment/docker/Dockerfile
+    container_name: whatsapp-otp-bot
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - WHATSAPP_HEADLESS=true
+      - CHROME_EXECUTABLE_PATH=/usr/bin/google-chrome-stable
+      - DB_PATH=/usr/src/app/data/whatsapp-bot.db
+      - WHATSAPP_SESSION_PATH=/usr/src/app/data/whatsapp-session
+      - CHROME_USER_DATA_DIR=/usr/src/app/data/chrome-data
+      - LOG_LEVEL=info
+      - API_KEY_SECRET=${API_KEY_SECRET:-default-secret-change-me}
+      - JWT_SECRET=${JWT_SECRET:-default-jwt-secret-change-me}
+      - ADMIN_TOKEN=${ADMIN_TOKEN:-admin-demo-token}
+    volumes:
+      - whatsapp_data:/usr/src/app/data
+      - whatsapp_logs:/usr/src/app/logs
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    security_opt:
+      - no-new-privileges:true
+    read_only: false
+    tmpfs:
+      - /tmp:size=100M
+    networks:
+      - whatsapp-network
+
+  # Optional: Nginx reverse proxy
+  nginx:
+    image: nginx:alpine
+    container_name: whatsapp-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+      - nginx_ssl:/etc/nginx/ssl
+    depends_on:
+      - whatsapp-otp-bot
+    networks:
+      - whatsapp-network
+
+volumes:
+  whatsapp_data:
+    driver: local
+  whatsapp_logs:
+    driver: local
+  nginx_ssl:
+    driver: local
+
+networks:
+  whatsapp-network:
+    driver: bridge
