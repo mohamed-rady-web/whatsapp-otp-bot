@@ -1,0 +1,59 @@
+[Unit]
+Description=WhatsApp OTP Bot Service
+Documentation=https://github.com/mohamed-rady-web/whatsapp-otp-bot
+After=network.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=whatsapp
+Group=whatsapp
+WorkingDirectory=/opt/whatsapp-otp-bot
+ExecStart=/usr/bin/node app.js
+ExecReload=/bin/kill -s HUP $MAINPID
+ExecStop=/bin/kill -s QUIT $MAINPID
+
+# Environment
+Environment=NODE_ENV=production
+Environment=PORT=3000
+EnvironmentFile=-/opt/whatsapp-otp-bot/.env
+
+# Security settings
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ProtectHome=yes
+ReadWritePaths=/opt/whatsapp-otp-bot/data /opt/whatsapp-otp-bot/logs
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectControlGroups=yes
+RestrictSUIDSGID=yes
+RestrictRealtime=yes
+RestrictNamespaces=yes
+LockPersonality=yes
+MemoryDenyWriteExecute=yes
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6 AF_NETLINK
+SystemCallFilter=@system-service
+SystemCallErrorNumber=EPERM
+
+# Resource limits
+LimitNOFILE=65536
+LimitNPROC=4096
+
+# Restart policy
+Restart=always
+RestartSec=10
+StartLimitInterval=60s
+StartLimitBurst=3
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=whatsapp-otp-bot
+
+# Timeouts
+TimeoutStartSec=60s
+TimeoutStopSec=30s
+
+[Install]
+WantedBy=multi-user.target

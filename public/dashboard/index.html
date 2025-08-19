@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WhatsApp OTP Bot - Dashboard</title>
+    <meta name="description" content="Production-ready WhatsApp OTP bot dashboard for monitoring and management">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/assets/logo.png">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Chart.js for analytics -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    
+    <!-- QR Code library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="loading-screen">
+        <div class="loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+        </div>
+        <p>Loading WhatsApp OTP Bot Dashboard...</p>
+    </div>
+
+    <!-- Main Dashboard -->
+    <div id="dashboard" class="dashboard" style="display: none;">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <img src="/assets/logo.png" alt="Logo" class="logo">
+                <h1 class="title">WhatsApp OTP Bot</h1>
+                <span class="version" id="version">v1.0.0</span>
+            </div>
+            
+            <div class="header-center">
+                <div class="connection-status" id="connection-status">
+                    <span class="status-indicator" id="status-indicator"></span>
+                    <span class="status-text" id="status-text">Checking...</span>
+                </div>
+            </div>
+            
+            <div class="header-right">
+                <button class="refresh-btn" id="refresh-btn" title="Refresh Data">
+                    <i class="fas fa-sync-alt"></i>
+                </button>
+                <div class="user-menu">
+                    <button class="user-btn" id="user-btn">
+                        <i class="fas fa-user-circle"></i>
+                        <span id="username">Admin</span>
+                    </button>
+                    <div class="user-dropdown" id="user-dropdown">
+                        <a href="#" id="logout-btn">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Navigation -->
+        <nav class="sidebar">
+            <ul class="nav-menu">
+                <li class="nav-item active" data-section="overview">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span>Overview</span>
+                    </a>
+                </li>
+                <li class="nav-item" data-section="whatsapp">
+                    <a href="#" class="nav-link">
+                        <i class="fab fa-whatsapp"></i>
+                        <span>WhatsApp</span>
+                    </a>
+                </li>
+                <li class="nav-item" data-section="messages">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-comments"></i>
+                        <span>Messages</span>
+                    </a>
+                </li>
+                <li class="nav-item" data-section="analytics">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Analytics</span>
+                    </a>
+                </li>
+                <li class="nav-item" data-section="api-keys">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-key"></i>
+                        <span>API Keys</span>
+                    </a>
+                </li>
+                <li class="nav-item" data-section="system">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-server"></i>
+                        <span>System</span>
+                    </a>
+                </li>
+                <li class="nav-item" data-section="logs">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-file-alt"></i>
+                        <span>Logs</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Overview Section -->
+            <section id="overview-section" class="content-section active">
+                <div class="section-header">
+                    <h2>Dashboard Overview</h2>
+                    <div class="period-selector">
+                        <select id="overview-period">
+                            <option value="24h" selected>Last 24 Hours</option>
+                            <option value="7d">Last 7 Days</option>
+                            <option value="30d">Last 30 Days</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Stats Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-paper-plane"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="total-messages">-</h3>
+                            <p>Total Messages</p>
+                            <span class="trend" id="messages-trend">
+                                <i class="fas fa-arrow-up"></i> 12%
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon success">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="delivered-messages">-</h3>
+                            <p>Delivered</p>
+                            <span class="trend success" id="delivered-trend">
+                                <i class="fas fa-arrow-up"></i> 8%
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon warning">
+                            <i class="fas fa-percentage"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="success-rate">-</h3>
+                            <p>Success Rate</p>
+                            <span class="trend success" id="success-rate-trend">
+                                <i class="fas fa-arrow-up"></i> 2%
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon info">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="active-sessions">-</h3>
+                            <p>Active Sessions</p>
+                            <span class="trend" id="sessions-trend">
+                                <i class="fas fa-minus"></i> 0%
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts -->
+                <div class="charts-grid">
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3>Message Activity</h3>
+                            <div class="chart-legend">
+                                <span class="legend-item">
+                                    <span class="legend-color success"></span>
+                                    Delivered
+                                </span>
+                                <span class="legend-item">
+                                    <span class="legend-color danger"></span>
+                                    Failed
+                                </span>
+                            </div>
+                        </div>
+                        <canvas id="messages-chart"></canvas>
+                    </div>
+
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3>Success Rate Trend</h3>
+                        </div>
+                        <canvas id="success-rate-chart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="recent-activity">
+                    <h3>Recent Activity</h3>
+                    <div class="activity-list" id="recent-activity">
+                        <!-- Activity items will be loaded dynamically -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- WhatsApp Section -->
+            <section id="whatsapp-section" class="content-section">
+                <div class="section-header">
+                    <h2>WhatsApp Connection</h2>
+                    <div class="action-buttons">
+                        <button class="btn btn-primary" id="connect-btn">
+                            <i class="fas fa-link"></i> Connect
+                        </button>
+                        <button class="btn btn-secondary" id="disconnect-btn">
+                            <i class="fas fa-unlink"></i> Disconnect
+                        </button>
+                        <button class="btn btn-warning" id="restart-btn">
+                            <i class="fas fa-redo"></i> Restart
+                        </button>
+                    </div>
+                </div>
+
+                <div class="whatsapp-grid">
+                    <!-- Connection Status -->
+                    <div class="whatsapp-card">
+                        <h3>Connection Status</h3>
+                        <div class="connection-info" id="connection-info">
+                            <div class="status-badge" id="whatsapp-status">Disconnected</div>
+                            <div class="connection-details">
+                                <p><strong>Session ID:</strong> <span id="session-id">-</span></p>
+                                <p><strong>Connected Phone:</strong> <span id="connected-phone">-</span></p>
+                                <p><strong>Last Activity:</strong> <span id="last-activity">-</span></p>
+                                <p><strong>Uptime:</strong> <span id="session-uptime">-</span></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- QR Code -->
+                    <div class="whatsapp-card">
+                        <h3>QR Code Authentication</h3>
+                        <div class="qr-container" id="qr-container">
+                            <div class="qr-placeholder" id="qr-placeholder">
+                                <i class="fab fa-whatsapp"></i>
+                                <p>Connect to WhatsApp to generate QR code</p>
+                            </div>
+                            <canvas id="qr-code" style="display: none;"></canvas>
+                        </div>
+                        <div class="qr-instructions">
+                            <p>1. Open WhatsApp on your phone</p>
+                            <p>2. Go to Settings > Linked Devices</p>
+                            <p>3. Tap "Link a Device"</p>
+                            <p>4. Scan this QR code</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Session Management -->
+                <div class="session-management">
+                    <h3>Session Management</h3>
+                    <div class="session-actions">
+                        <button class="btn btn-danger" id="clear-sessions-btn">
+                            <i class="fas fa-trash"></i> Clear All Sessions
+                        </button>
+                        <button class="btn btn-info" id="screenshot-btn">
+                            <i class="fas fa-camera"></i> Take Screenshot
+                        </button>
+                    </div>
+                    <div class="sessions-list" id="sessions-list">
+                        <!-- Sessions will be loaded dynamically -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Messages Section -->
+            <section id="messages-section" class="content-section">
+                <div class="section-header">
+                    <h2>Message History</h2>
+                    <div class="filters">
+                        <select id="status-filter">
+                            <option value="">All Status</option>
+                            <option value="delivered">Delivered</option>
+                            <option value="failed">Failed</option>
+                            <option value="pending">Pending</option>
+                        </select>
+                        <input type="date" id="date-from" placeholder="From Date">
+                        <input type="date" id="date-to" placeholder="To Date">
+                        <button class="btn btn-primary" id="apply-filters">Apply</button>
+                        <button class="btn btn-secondary" id="export-messages">
+                            <i class="fas fa-download"></i> Export
+                        </button>
+                    </div>
+                </div>
+
+                <div class="messages-table-container">
+                    <table class="messages-table">
+                        <thead>
+                            <tr>
+                                <th>Time</th>
+                                <th>Phone</th>
+                                <th>Status</th>
+                                <th>Message</th>
+                                <th>API Key</th>
+                                <th>Attempts</th>
+                            </tr>
+                        </thead>
+                        <tbody id="messages-table-body">
+                            <!-- Messages will be loaded dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="pagination" id="messages-pagination">
+                    <!-- Pagination will be generated dynamically -->
+                </div>
+            </section>
+
+            <!-- Analytics Section -->
+            <section id="analytics-section" class="content-section">
+                <div class="section-header">
+                    <h2>Analytics & Reports</h2>
+                    <div class="period-selector">
+                        <select id="analytics-period">
+                            <option value="7d" selected>Last 7 Days</option>
+                            <option value="30d">Last 30 Days</option>
+                            <option value="90d">Last 90 Days</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="analytics-grid">
+                    <div class="analytics-card">
+                        <h3>Performance Metrics</h3>
+                        <canvas id="performance-chart"></canvas>
+                    </div>
+
+                    <div class="analytics-card">
+                        <h3>Message Volume</h3>
+                        <canvas id="volume-chart"></canvas>
+                    </div>
+
+                    <div class="analytics-card">
+                        <h3>API Usage by Key</h3>
+                        <canvas id="api-usage-chart"></canvas>
+                    </div>
+
+                    <div class="analytics-card">
+                        <h3>Error Distribution</h3>
+                        <canvas id="error-chart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <!-- API Keys Section -->
+            <section id="api-keys-section" class="content-section">
+                <div class="section-header">
+                    <h2>API Key Management</h2>
+                    <button class="btn btn-primary" id="create-api-key-btn">
+                        <i class="fas fa-plus"></i> Create New API Key
+                    </button>
+                </div>
+
+                <div class="api-keys-list" id="api-keys-list">
+                    <!-- API keys will be loaded dynamically -->
+                </div>
+            </section>
+
+            <!-- System Section -->
+            <section id="system-section" class="content-section">
+                <div class="section-header">
+                    <h2>System Monitoring</h2>
+                </div>
+
+                <div class="system-grid">
+                    <div class="system-card">
+                        <h3>System Health</h3>
+                        <div class="health-indicators" id="health-indicators">
+                            <!-- Health indicators will be loaded dynamically -->
+                        </div>
+                    </div>
+
+                    <div class="system-card">
+                        <h3>Resource Usage</h3>
+                        <div class="resource-meters">
+                            <div class="meter">
+                                <label>Memory Usage</label>
+                                <div class="progress-bar">
+                                    <div class="progress" id="memory-usage"></div>
+                                </div>
+                                <span id="memory-text">-</span>
+                            </div>
+                            <div class="meter">
+                                <label>CPU Load</label>
+                                <div class="progress-bar">
+                                    <div class="progress" id="cpu-usage"></div>
+                                </div>
+                                <span id="cpu-text">-</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="system-card">
+                        <h3>System Information</h3>
+                        <div class="system-info" id="system-info">
+                            <!-- System info will be loaded dynamically -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Logs Section -->
+            <section id="logs-section" class="content-section">
+                <div class="section-header">
+                    <h2>System Logs</h2>
+                    <div class="log-controls">
+                        <select id="log-level">
+                            <option value="">All Levels</option>
+                            <option value="error">Error</option>
+                            <option value="warn">Warning</option>
+                            <option value="info" selected>Info</option>
+                            <option value="debug">Debug</option>
+                        </select>
+                        <select id="log-service">
+                            <option value="">All Services</option>
+                            <option value="whatsapp">WhatsApp</option>
+                            <option value="api">API</option>
+                            <option value="database">Database</option>
+                            <option value="auth">Authentication</option>
+                        </select>
+                        <button class="btn btn-primary" id="refresh-logs">
+                            <i class="fas fa-sync"></i> Refresh
+                        </button>
+                        <button class="btn btn-secondary" id="clear-logs">
+                            <i class="fas fa-trash"></i> Clear View
+                        </button>
+                    </div>
+                </div>
+
+                <div class="logs-container">
+                    <div class="logs-output" id="logs-output">
+                        <!-- Logs will be loaded dynamically -->
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <div id="modal-overlay" class="modal-overlay">
+        <!-- Create API Key Modal -->
+        <div id="create-api-key-modal" class="modal">
+            <div class="modal-header">
+                <h3>Create New API Key</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="create-api-key-form">
+                    <div class="form-group">
+                        <label for="api-key-name">Name</label>
+                        <input type="text" id="api-key-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="api-key-permissions">Permissions</label>
+                        <div class="permissions-list">
+                            <label class="checkbox">
+                                <input type="checkbox" value="send_otp" checked> Send OTP
+                            </label>
+                            <label class="checkbox">
+                                <input type="checkbox" value="send_message"> Send Messages
+                            </label>
+                            <label class="checkbox">
+                                <input type="checkbox" value="manage_sessions"> Manage Sessions
+                            </label>
+                            <label class="checkbox">
+                                <input type="checkbox" value="view_stats"> View Statistics
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="api-key-rate-limit">Rate Limit (requests per 15 min)</label>
+                        <input type="number" id="api-key-rate-limit" value="100" min="1" max="10000">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="cancel-api-key">Cancel</button>
+                <button class="btn btn-primary" id="submit-api-key">Create API Key</button>
+            </div>
+        </div>
+
+        <!-- API Key Display Modal -->
+        <div id="api-key-display-modal" class="modal">
+            <div class="modal-header">
+                <h3>API Key Created Successfully</h3>
+            </div>
+            <div class="modal-body">
+                <div class="api-key-result">
+                    <p><strong>WARNING:</strong> This is the only time you will see this API key. Store it securely.</p>
+                    <div class="api-key-display">
+                        <input type="text" id="generated-api-key" readonly>
+                        <button class="btn btn-secondary" id="copy-api-key">
+                            <i class="fas fa-copy"></i> Copy
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" id="close-api-key-modal">I've Saved It</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="script.js"></script>
+</body>
+</html>
